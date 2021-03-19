@@ -20,8 +20,11 @@ export default function ColorExplosion() {
     const stringToColor = () => {
         const d = document.createElement("div");
         d.style.color = inputValue;
+        
         document.body.appendChild(d)
         const selectedColor = window.getComputedStyle(d).color
+        
+        console.log('color d',window.getComputedStyle(d).color)
             const getColor = (c) => {
                 let temp = document.createElement("div");
                 let color = {rValue:0,gValue:0,bValue:0};
@@ -38,42 +41,54 @@ export default function ColorExplosion() {
                 }
                 for (let colorOfDoc1 of document.getElementsByClassName('color-light')) {
                     colorOfDoc1.style.backgroundColor = `rgb(${color.rValue}, ${color.gValue}, ${color.bValue})`;
-                    
-                    if (color.rValue === 255) {
-                        let newR = 256;
-                        color.rvalue = newR -= 26;
+                    //color check dieu kien truoc, neu < 0 thi set = 0, neu > 255 set ve 255
+                    const checkValue = (value) => {
+                        if (value === 255) {
+                            let newR = 256;
+                            value = newR -= 26;
+                        }
+                        else if (value !== 0 && value < 255) {
+                            value -= 26;
+                        } 
+                        else if( value === 0) {
+                            value = 0;
+                        }
+                        else if ( value < 0) {
+                            value = 0;
+                        }
+                        return console.log('final value',value)
                     }
-                    else if (color.rValue !== 0 && color.rValue < 255) {
-                        color.rValue -= 26;
-                    } 
-                    else if( color.rValue === 0) {
-                        color.rValue = 0;
-                    }
-                    if (color.gValue === 255) {
-                        let newG = 256;
-                        color.gValue = newG -= 26;
-                    }
-                    else if (color.gValue !== 0 && color.gValue < 255) {
-                        color.gValue -= 26;
-                    } 
-                    else if( color.gValue === 0) {
-                        color.gValue = 0;
-                    }
-                    if (color.bValue === 255) {
-                        let newB = 256;
-                        color.bValue = newB -= 26;
-                    }
-                    else if (color.bValue !== 0 && color.bValue < 255) {
-                        color.bValue -= 26;
-                    } 
-                    else if( color.b === 0) {
-                        color.bValue = 0;
-                    }
+                    checkValue(241)
+
+                    // if (color.gValue === 255) {
+                    //     let newG = 256;
+                    //     color.gValue = newG -= 26;
+                    // }
+                    // else if (color.gValue !== 0 && color.gValue < 255) {
+                    //     color.gValue -= 26;
+                    // } 
+                    // else if( color.gValue === 0) {
+                    //     color.gValue = 0;
+                    // }
+
+                    // if (color.bValue === 255) {
+                    //     let newB = 256;
+                    //     color.bValue = newB -= 26;
+                    // }
+                    // else if (color.bValue !== 0 && color.bValue < 255) {
+                    //     color.bValue -= 26;
+                    // } 
+                    // else if( color.b === 0) {
+                    //     color.bValue = 0;
+                    // }
+
                     // colorOfDoc1.innerText = rgbToHex(color.r, color.g, color.b);
                     colorOfDoc1.style.backgroundColor = `rgb(${color.rValue}, ${color.gValue}, ${color.bValue})`;
-                    var node2 = document.createElement("p");                 
-                    node2.innerHTML = `${rgbToHex(color.rValue, color.gValue, color.bValue)}`; 
+                    const node2 = document.createElement("p"); 
+                    console.log(color.rValue,"==", color.gValue, "==", color.bValue)
+                    node2.innerHTML = `${RGBToHex(color.rValue, color.gValue, color.bValue)}`; 
                     colorOfDoc1.appendChild(node2);
+                    
                 }
                 return `rgb ${color.rValue}, ${color.gValue}, ${color.bValue}`
             }
@@ -106,15 +121,12 @@ export default function ColorExplosion() {
                     }
                     if (color.g === 255) {
                         color.g += 26;
-                        
                     }
                     else if (color.g !== 0 && color.g < 255) {
                         color.g += 26;
-                        
                     } 
                     else if( color.g === 0) {
                         color.g += 26;
-                        
                     }
                     if (color.b === 255) {
                         color.b += 26;
@@ -127,7 +139,7 @@ export default function ColorExplosion() {
                     }
                     colorOfDoc2.style.backgroundColor = `rgb(${color.r}, ${color.g}, ${color.b})`;
                     var node1 = document.createElement("p");                 
-                    node1.innerHTML = `${rgbToHex(color.r, color.g, color.b)}`; 
+                    node1.innerHTML = `${RGBToHex(color.r, color.g, color.b)}`; 
                     colorOfDoc2.appendChild(node1);
                 }
                 
@@ -140,17 +152,35 @@ export default function ColorExplosion() {
                 }   
                 return newArr;
             }
-            const componentToHex = (c) => {
-                var hex = c.toString(16);
-                return hex.length == 1 ? "0" + hex : hex;
+
+            const RGBToHex = (r,g,b) => {
+                r = r.toString(16);
+                g = g.toString(16);
+                b = b.toString(16);
+                if(r < 0) {
+                    r = 0
+                }
+                if (g < 0) {
+                    g = 0
+                }
+                if( b < 0) {
+                    b = 0
+                }
+                
+                if (r.length === 1)
+                r = "0" + r;
+                if (g.length === 1)
+                g = "0" + g;
+                if (b.length === 1)
+                b = "0" + b;
+                // const hex = "#" + r + g + b;
+                // let newValue = hex.replace(/\s|\W|[#$%^&-*()]/g, "")
+                    return "#" + r + g + b;
             }
             
-            const rgbToHex = (r, g, b) => {
-            return "#"+componentToHex(r)+componentToHex(g) + componentToHex(b);
-            }
-        setColorInRgb(`${getColor2(selectedColor)}`) 
+                    
+        // setColorInRgb(`${getColor2(selectedColor)}`) 
         setColorInRgb(`${getColor(selectedColor)}`)
-        
         setInputValue("")
     }
     // const componentToHex = (c) => {
@@ -175,7 +205,7 @@ export default function ColorExplosion() {
                         <p  className="percent-value">{item.percentage}</p>
                     </article>
                 ))}
-                <article className="color color-light " style={{backgroundColor: `rgb(255,255,255)`,color: "#000"}}><p className="percent-value">0%</p><p className="color-value">{inputValue}</p></article>
+                <article className="color color-light " style={{backgroundColor: `rgb(255,255,255)`,color: "#000000"}}><p className="percent-value">0%</p></article>
                 {listDarker.map((item,index) => (
                     <article key={index} className="color color-light" style={{backgroundColor: `rgb(255,255,255)`, color: "#ffffff"}}>
                         <p className="percent-value">{item.percentage}</p>

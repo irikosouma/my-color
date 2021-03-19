@@ -46,16 +46,24 @@ grid-template-rows: 100px 1fr;
             flex-direction: column;
             align-items:flex-start;
             justify-content: flex-start;
-            /* padding-top: 0px; */
-            & :first-child, & :last-child{
+            position: relative;
+            /* :first-child, :last-child {  
                 width: 100%;
-            }
+            } */
+            
         }
         article {
             padding: 1rem 2rem;
             cursor: pointer;
             font-size: 1rem;
             text-transform: none;
+                
+                & :not(:last-child) {
+                    display: none!important;
+                }
+                & .percent-value {
+                    display: block!important;
+                }
         }
         .color-light {
             color: #ffffff;
