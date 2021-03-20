@@ -5,213 +5,179 @@ import {WrapContent} from './index.styles'
 import light from '../data/listColor'
 import dark from '../data/listDarkColor'
 import dataPercent from '../data/dataPercent'
+
 export default function ColorExplosion() {
     const [inputValue, setInputValue] = useState("white");
-    const [colorInRgb, setColorInRgb] = useState()
+    const [selected, setSelected] = useState(`rgb(255,255,255)`)
+    const [lighter, setLighter] = useState(`rgb(255,255,255)`)
+    const [darker, setDarker] = useState(`rgb(0,0,0)`)
     const [listLighter, setListLighter] = useState(light);
     const [listDarker, setListDarker] = useState(dark);
-    const [rValue, setR] = useState(255)
-    const [gValue, setG] = useState(255)
-    const [bValue, setB] = useState(255)
     const handleChange = (e) => {
         let inputVal = e.target.value
         setInputValue(inputVal)
     }
-    const stringToColor = () => {
+    const colorChanged = (h) => {
         const d = document.createElement("div");
         d.style.color = inputValue;
-        
         document.body.appendChild(d)
-        const selectedColor = window.getComputedStyle(d).color
-        
-        console.log('color d',window.getComputedStyle(d).color)
-            const getColor = (c) => {
-                let temp = document.createElement("div");
-                let color = {rValue:0,gValue:0,bValue:0};
-                temp.style.color = c;
-                document.body.appendChild(temp);
-                let style = window.getComputedStyle(temp,null).color;
-                document.body.removeChild(temp);
-                let recol = /([\.\d]+)/g;
-                let vals  = style.match(recol);
-                if (vals.length>2) {
-                    color.rValue = parseInt(vals[0])||0;
-                    color.gValue = parseInt(vals[1])||0;
-                    color.bValue = parseInt(vals[2])||0;
-                }
-                for (let colorOfDoc1 of document.getElementsByClassName('color-light')) {
-                    colorOfDoc1.style.backgroundColor = `rgb(${color.rValue}, ${color.gValue}, ${color.bValue})`;
-                    //color check dieu kien truoc, neu < 0 thi set = 0, neu > 255 set ve 255
-                    const checkValue = (value) => {
-                        if (value === 255) {
-                            let newR = 256;
-                            value = newR -= 26;
-                        }
-                        else if (value !== 0 && value < 255) {
-                            value -= 26;
-                        } 
-                        else if( value === 0) {
-                            value = 0;
-                        }
-                        else if ( value < 0) {
-                            value = 0;
-                        }
-                        return console.log('final value',value)
-                    }
-                    checkValue(241)
-
-                    // if (color.gValue === 255) {
-                    //     let newG = 256;
-                    //     color.gValue = newG -= 26;
-                    // }
-                    // else if (color.gValue !== 0 && color.gValue < 255) {
-                    //     color.gValue -= 26;
-                    // } 
-                    // else if( color.gValue === 0) {
-                    //     color.gValue = 0;
-                    // }
-
-                    // if (color.bValue === 255) {
-                    //     let newB = 256;
-                    //     color.bValue = newB -= 26;
-                    // }
-                    // else if (color.bValue !== 0 && color.bValue < 255) {
-                    //     color.bValue -= 26;
-                    // } 
-                    // else if( color.b === 0) {
-                    //     color.bValue = 0;
-                    // }
-
-                    // colorOfDoc1.innerText = rgbToHex(color.r, color.g, color.b);
-                    colorOfDoc1.style.backgroundColor = `rgb(${color.rValue}, ${color.gValue}, ${color.bValue})`;
-                    const node2 = document.createElement("p"); 
-                    console.log(color.rValue,"==", color.gValue, "==", color.bValue)
-                    node2.innerHTML = `${RGBToHex(color.rValue, color.gValue, color.bValue)}`; 
-                    colorOfDoc1.appendChild(node2);
-                    
-                }
-                return `rgb ${color.rValue}, ${color.gValue}, ${color.bValue}`
+        const selectedColor = window.getComputedStyle(d).color;
+        function RGBToHSL(r,g,b) {
+            r /= 255;
+            g /= 255;
+            b /= 255;
+            let cmin = Math.min(r,g,b),
+                cmax = Math.max(r,g,b),
+                delta = cmax - cmin,
+                h = 0,
+                s = 0,
+                l = 0;
+            if (delta == 0)
+            h = 0;
+            // Red is max
+            else if (cmax == r)
+            h = ((g - b) / delta) % 6;
+            // Green is max
+            else if (cmax == g)
+            h = (b - r) / delta + 2;
+            // Blue is max
+            else
+            h = (r - g) / delta + 4;
+            h = Math.round(h * 60);
+            if (h < 0)
+                h += 360;
+            l = (cmax + cmin) / 2;
+            s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+            s = +(s * 100).toFixed(1);
+            l = +(l * 100).toFixed(1);
+            return h
+        }
+        const getColor = (c) => {
+            var temp = document.createElement("div");
+            var color = {r:0,g:0,b:0};
+            temp.style.color = c;
+            temp.style.display = "none";
+            document.body.appendChild(temp);
+            var style = window.getComputedStyle(temp,null).color;
+            document.body.removeChild(temp);
+            var recol = /([\.\d]+)/g;
+            var vals  = style.match(recol);
+            if (vals.length>2) {
+                color.r = parseInt(vals[0])||0;
+                color.g = parseInt(vals[1])||0;
+                color.b = parseInt(vals[2])||0;
             }
-            const getColor2 = (c) => {
-                let temp = document.createElement("div");
-                let color = {r:0,g:0,b:0};
-                temp.style.color = c;
-                document.body.appendChild(temp);
-                let style = window.getComputedStyle(temp,null).color;
-                document.body.removeChild(temp);
-                let recol = /([\.\d]+)/g;
-                let vals  = style.match(recol);
-                if (vals.length>2) {
-                    color.r = parseInt(vals[0])||0;
-                    color.g = parseInt(vals[1])||0;
-                    color.b = parseInt(vals[2])||0;
-                }
-                var colorLight = document.getElementsByClassName('false')
-                var newArray = Array.from(colorLight)
-                
-                for (let colorOfDoc2 of reverseArray(newArray)) {                 
-                    if (color.r === 255) {
-                        color.r += 26;
-                    }
-                    else if (color.r !== 0 && color.r < 255) {
-                        color.r += 26;
-                    } 
-                    else if( color.r === 0) {
-                        color.r += 26;
-                    }
-                    if (color.g === 255) {
-                        color.g += 26;
-                    }
-                    else if (color.g !== 0 && color.g < 255) {
-                        color.g += 26;
-                    } 
-                    else if( color.g === 0) {
-                        color.g += 26;
-                    }
-                    if (color.b === 255) {
-                        color.b += 26;
-                    }
-                    else if (color.b !== 0 && color.b < 255) {
-                        color.b += 26;
-                    } 
-                    else if( color.b === 0) {
-                        color.b += 26;
-                    }
-                    colorOfDoc2.style.backgroundColor = `rgb(${color.r}, ${color.g}, ${color.b})`;
-                    var node1 = document.createElement("p");                 
-                    node1.innerHTML = `${RGBToHex(color.r, color.g, color.b)}`; 
-                    colorOfDoc2.appendChild(node1);
-                }
-                
-                return `${color.r}, ${color.g}, ${color.b}`;
-            } 
+            return color;
+        }
+        RGBToHSL(getColor(selectedColor).r,getColor(selectedColor).g, getColor(selectedColor).b)
+        {
+            let s = 100;
+            let l = 55;
+            let h = RGBToHSL(getColor(selectedColor).r,getColor(selectedColor).g, getColor(selectedColor).b)
+            var colorLight = document.getElementsByClassName('false')
+            var newArray = Array.from(colorLight)
             const reverseArray = (arr) => {
-                var newArr = [];
-                for (var i = 0, j = arr.length - 1; i < arr.length; i++, j--) {      
-                    newArr[i] = arr[j];
-                }   
-                return newArr;
+            var newArr = [];
+            for (var i = 0, j = arr.length - 1; i < arr.length; i++, j--) {      
+                newArr[i] = arr[j];
+            }   
+            return newArr;
             }
-
-            const RGBToHex = (r,g,b) => {
-                r = r.toString(16);
-                g = g.toString(16);
-                b = b.toString(16);
-                if(r < 0) {
-                    r = 0
-                }
-                if (g < 0) {
-                    g = 0
-                }
-                if( b < 0) {
-                    b = 0
-                }
+            let total = 10
+            for (let colorOfDoc of reverseArray(newArray)) {
+                colorOfDoc.style.backgroundColor = `hsl(${h}deg ${s}% ${l}%)`;
+                colorOfDoc.innerText = HSLToRGB(h, s, l);
+                var node1 = document.createElement("p");                 
+                let newValue = `${total} %`
+                node1.innerHTML = newValue
+                total += 10 ;
+                colorOfDoc.appendChild(node1);
+                l += 5;
+            }
+        }
+        {
+            h = RGBToHSL(getColor(selectedColor).r,getColor(selectedColor).g, getColor(selectedColor).b)
+            console.log('h ne', h)
+            let s2 = 100;
+            let l2 = 50;
+            let total = 0
+            for (let colorOfDoc2 of document.getElementsByClassName('color-light')) {
+                colorOfDoc2.style.backgroundColor = `hsl(${h}deg ${s2}% ${l2}%)`;
+                colorOfDoc2.innerText = HSLToRGB(h, s2, l2);
+                var node = document.createElement("p");                 
+                let newValue = `${total} %`
+                node.innerHTML = newValue
+                total += 10 ;
+                colorOfDoc2.appendChild(node);
+                l2 -= 5;
                 
-                if (r.length === 1)
-                r = "0" + r;
-                if (g.length === 1)
-                g = "0" + g;
-                if (b.length === 1)
-                b = "0" + b;
-                // const hex = "#" + r + g + b;
-                // let newValue = hex.replace(/\s|\W|[#$%^&-*()]/g, "")
-                    return "#" + r + g + b;
             }
-            
-                    
-        // setColorInRgb(`${getColor2(selectedColor)}`) 
-        setColorInRgb(`${getColor(selectedColor)}`)
+            ;
+        }
+        setSelected(selectedColor);
+        setLighter(...listLighter)
+        setDarker(...listDarker)
         setInputValue("")
     }
-    // const componentToHex = (c) => {
-    //     var hex = c.toString(16);
-    //     return hex.length == 1 ? "0" + hex : hex;
-    // }
-    
-    // const rgbToHex = (r, g, b) => {
-    // return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
-    // }
+    function HSLToRGB(h, s, l) {
+    s /= 100;
+    l /= 100;
+    let c = (1 - Math.abs(2 * l - 1)) * s,
+        x = c * (1 - Math.abs((h / 60) % 2 - 1)),
+        m = l - c / 2,
+        r = 0,
+        g = 0,
+        b = 0;
+    if (0 <= h && h < 60) {
+        r = c; g = x; b = 0;
+    } else if (60 <= h && h < 120) {
+        r = x; g = c; b = 0;
+    } else if (120 <= h && h < 180) {
+        r = 0; g = c; b = x;
+    } else if (180 <= h && h < 240) {
+        r = 0; g = x; b = c;
+    } else if (240 <= h && h < 300) {
+        r = x; g = 0; b = c;
+    } else if (300 <= h && h < 360) {
+        r = c; g = 0; b = x;
+    }
+    const hex = 
+      Math.floor((r + m) * 255).toString(16).padStart(2, '0') + 
+      Math.floor((g + m) * 255).toString(16).padStart(2, '0') + 
+      Math.floor((b + m) * 255).toString(16).padStart(2, '0');
+        let newValue = hex.replace(/\s|\W|[$%^&-*()]/g, "0")
+    return "#" + newValue
+}
+const copyToClipboard = str => {
+                
+    let colorOfDoc2 = document.getElementsByClassName('color-light')
+    colorOfDoc2.innerText = HSLToRGB(h, s2, l2);
+
+    document.body.appendChild(colorOfDoc2.innerText);
+    colorOfDoc2.innerText.select();
+    document.execCommand('copy');
+    document.body.removeChild(colorOfDoc2.innerText);
+}
     return (
         <WrapContent>
             <div className="header">
                 <div className="title-page">Color Generator</div>
                 <input type="text" id="input"  placeholder={inputValue}  value={inputValue} onChange={(e) => handleChange(e)} />
-                <button className="btn-submit" onClick={stringToColor}>Submit</button>
+                <button className="btn-submit" onClick={colorChanged}>Submit</button>
             </div>
             <div className="bound-color">
-                <article className="color " style={{backgroundColor: `rgb(255, 255, 255)`}}><p className="percent-value">100%</p><p className="color-value">#ffffff</p></article>
                 {listLighter.map((item,index) => (
-                    <article key={index} className= "color false" style={{backgroundColor: `rgb(255,255,255)`}}>
+                    <article key={index} className= "color false" style={{backgroundColor:`rgb(255,255,255)`}} onClick={colorChanged}>
                         <p  className="percent-value">{item.percentage}</p>
                     </article>
                 ))}
-                <article className="color color-light " style={{backgroundColor: `rgb(255,255,255)`,color: "#000000"}}><p className="percent-value">0%</p></article>
+                <article className="color color-light" style={{backgroundColor: selected,color: "#000000"}}><p className="percent-value">0%</p></article>
                 {listDarker.map((item,index) => (
-                    <article key={index} className="color color-light" style={{backgroundColor: `rgb(255,255,255)`, color: "#ffffff"}}>
+                    <article key={index} className="color color-light" style={{backgroundColor: `rgb(255,255,255)`, color: "#fff"}}>
                         <p className="percent-value">{item.percentage}</p>
                     </article>
                 ))}
-                <article className="color " style={{backgroundColor: `rgb(0, 0, 0)`, color: "#ffffff"}}><p className="percent-value">100%</p><p className="color-value">#000000</p></article>
+                
             </div>
             
         </WrapContent>

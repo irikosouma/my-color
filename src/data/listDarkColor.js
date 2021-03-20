@@ -36,6 +36,10 @@ const dark = [
     {
         id: "9",
         percentage: "90%"
+    },
+    {
+        id: "10",
+        percentage: "100%"
     }
 
 ];
