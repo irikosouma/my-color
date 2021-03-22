@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 //style
 import {WrapContent} from './index.styles'
 //data
@@ -13,15 +13,21 @@ export default function ColorExplosion() {
     const [darker, setDarker] = useState(`rgb(0,0,0)`)
     const [listLighter, setListLighter] = useState(light);
     const [listDarker, setListDarker] = useState(dark);
+    const [isActive, setIsActive] = useState(false)
+    const [showLoading, setShowLoading] = useState(false)
     const handleChange = (e) => {
         let inputVal = e.target.value
         setInputValue(inputVal)
     }
     const colorChanged = (h) => {
+        setListLighter([])
+        setListDarker([])
+        
         const d = document.createElement("div");
         d.style.color = inputValue;
         document.body.appendChild(d)
         const selectedColor = window.getComputedStyle(d).color;
+        setSelected(selectedColor);
         function RGBToHSL(r,g,b) {
             r /= 255;
             g /= 255;
@@ -86,38 +92,62 @@ export default function ColorExplosion() {
             let total = 10
             for (let colorOfDoc of reverseArray(newArray)) {
                 colorOfDoc.style.backgroundColor = `hsl(${h}deg ${s}% ${l}%)`;
-                colorOfDoc.innerText = HSLToRGB(h, s, l);
-                var node1 = document.createElement("p");                 
-                let newValue = `${total} %`
-                node1.innerHTML = newValue
-                total += 10 ;
-                colorOfDoc.appendChild(node1);
+                const textColor = document.createElement("div");
+                textColor.className = "color-div"
+                textColor.innerHTML = HSLToRGB(h, s, l);
+                colorOfDoc.appendChild(textColor)
                 l += 5;
+                let newArr = [];
+                newArr.push(textColor)
+                if(newArr.length === 2) {
+                    colorOfDoc.removeChild(textColor[0])
+                }
             }
         }
         {
             h = RGBToHSL(getColor(selectedColor).r,getColor(selectedColor).g, getColor(selectedColor).b)
-            console.log('h ne', h)
             let s2 = 100;
             let l2 = 50;
-            let total = 0
+            let total = 0;
             for (let colorOfDoc2 of document.getElementsByClassName('color-light')) {
                 colorOfDoc2.style.backgroundColor = `hsl(${h}deg ${s2}% ${l2}%)`;
-                colorOfDoc2.innerText = HSLToRGB(h, s2, l2);
-                var node = document.createElement("p");                 
-                let newValue = `${total} %`
-                node.innerHTML = newValue
-                total += 10 ;
-                colorOfDoc2.appendChild(node);
+                const textColor2 = document.createElement("div");
+                // console.log('doccc', colorOfDoc2.innerHTML)
+                
+                textColor2.className = "div-color"
+                
+                textColor2.innerHTML = HSLToRGB(h, s2, l2);
+                colorOfDoc2.appendChild(textColor2)
                 l2 -= 5;
+                // console.log('text color', typeof textColor2)
+                let newArr = [];
+                newArr.push(textColor2)
+                // console.log('new array', newArr)
+                // console.log('text color',textColor2[1])
+                // if(newArr.length === 3) {
+                //     colorOfDoc2.removeChild(textColor2[1])
+                //     console.log ('text color',textColor2)
+                // }
+            }    
+        }
+            for (let totalColor1 of document.getElementsByClassName('color-light')) {
+                const colorTotal = document.getElementsByClassName('div-color')
+                // const lengthColor = divOfColor.length
+                // console.log('divvv', divOfColor)
+                // let newColor = Array.from(colorTotal);
+                // console.log('new color is there', newColor)
+                // newColor.filter((item) => item % 2 === 0)
+                totalColor1.removeChild(colorTotal[1])
+                // totalColor1.removeChild(colorTotal[3])
+                
                 
             }
-            ;
-        }
-        setSelected(selectedColor);
-        setLighter(...listLighter)
-        setDarker(...listDarker)
+        
+        setListLighter(listLighter)
+        setListDarker(listDarker)
+        
         setInputValue("")
+        
     }
     function HSLToRGB(h, s, l) {
     s /= 100;
@@ -147,17 +177,23 @@ export default function ColorExplosion() {
       Math.floor((b + m) * 255).toString(16).padStart(2, '0');
         let newValue = hex.replace(/\s|\W|[$%^&-*()]/g, "0")
     return "#" + newValue
-}
-const copyToClipboard = str => {
-                
-    let colorOfDoc2 = document.getElementsByClassName('color-light')
-    colorOfDoc2.innerText = HSLToRGB(h, s2, l2);
+    }
+    const copyToClipboard = (e) => {
+        let valueColor = e.target.lastElementChild.innerHTML
+        // console.log('copy', valueColor)
+        const newEl = document.createElement('textarea');
+        newEl.value = valueColor;
+        newEl.setAttribute('readonly','');
+        newEl.style.position = 'absolute';
+        newEl.style.left = '-9999px';
+        document.body.appendChild(newEl)
+        newEl.select();
+        document.execCommand('copy')
+        document.body.removeChild(newEl)
+        setShowLoading(true)
+    
+    }
 
-    document.body.appendChild(colorOfDoc2.innerText);
-    colorOfDoc2.innerText.select();
-    document.execCommand('copy');
-    document.body.removeChild(colorOfDoc2.innerText);
-}
     return (
         <WrapContent>
             <div className="header">
@@ -167,17 +203,23 @@ const copyToClipboard = str => {
             </div>
             <div className="bound-color">
                 {listLighter.map((item,index) => (
-                    <article key={index} className= "color false" style={{backgroundColor:`rgb(255,255,255)`}} onClick={colorChanged}>
+                    // backgroundColor:`rgb(255,255,255)`
+                    <article key={index} className= "color false" style={{}} onClick={(e) => copyToClipboard(e)}>
                         <p  className="percent-value">{item.percentage}</p>
+                        {/* <p id="div-1">COPY TO CLIPBOARD</p> */}
                     </article>
                 ))}
-                <article className="color color-light" style={{backgroundColor: selected,color: "#000000"}}><p className="percent-value">0%</p></article>
+                <article className="color color-light" style={{backgroundColor: selected,color: "#000000"}} onClick={(e) => copyToClipboard(e)}>
+                    <p className="percent-value">0%</p>
+                    {/* <p id="div-1" style={{visibility: showLoading ? "visible": 'hidden'}}>COPY TO CLIPBOARD</p> */}
+                    
+                </article>
+                
                 {listDarker.map((item,index) => (
-                    <article key={index} className="color color-light" style={{backgroundColor: `rgb(255,255,255)`, color: "#fff"}}>
+                    <article key={index} className="color color-light" style={{color: "#fff"}} onClick={(e) => copyToClipboard(e)}>
                         <p className="percent-value">{item.percentage}</p>
                     </article>
                 ))}
-                
             </div>
             
         </WrapContent>

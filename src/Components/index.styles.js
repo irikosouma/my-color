@@ -41,15 +41,16 @@ grid-template-rows: 100px 1fr;
         grid-template-columns: repeat(auto-fit,minmax(223.33px,1fr));
         grid-template-rows: repeat(auto-fit,minmax(96px,1fr));
         color: #000000;
+        #text {
+            margin-top: 45px;
+        }
+        p { margin-top: 6px;}
         .color {
             display: flex;
             flex-direction: column;
             align-items:flex-start;
             justify-content: flex-start;
             position: relative;
-            /* :first-child, :last-child {  
-                width: 100%;
-            } */
             
         }
         article {
@@ -57,10 +58,12 @@ grid-template-rows: 100px 1fr;
             cursor: pointer;
             font-size: 1rem;
             text-transform: none;
-                
-                & :not(:last-child) {
+                /* & :nth-child(1) {
                     display: none!important;
-                }
+                } */
+                /* & :not(:last-child) {
+                    display: none!important;
+                } */
                 & .percent-value {
                     display: block!important;
                 }
