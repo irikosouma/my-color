@@ -1,20 +1,21 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 //style
 import {WrapContent} from './index.styles'
 //data
 import light from '../data/listColor'
 import dark from '../data/listDarkColor'
-import dataPercent from '../data/dataPercent'
+// import dataPercent from '../data/dataPercent'
 
 export default function ColorExplosion() {
     const [inputValue, setInputValue] = useState("white");
     const [selected, setSelected] = useState(`rgb(255,255,255)`)
-    const [lighter, setLighter] = useState(`rgb(255,255,255)`)
-    const [darker, setDarker] = useState(`rgb(0,0,0)`)
+    // const [lighter, setLighter] = useState(`rgb(255,255,255)`)
+    // const [darker, setDarker] = useState(`rgb(0,0,0)`)
     const [listLighter, setListLighter] = useState(light);
     const [listDarker, setListDarker] = useState(dark);
-    const [isActive, setIsActive] = useState(false)
-    const [showLoading, setShowLoading] = useState(false)
+    console.log('dark', dark)
+    // const [isActive, setIsActive] = useState(false)
+    // const [showLoading, setShowLoading] = useState(false)
     const handleChange = (e) => {
         let inputVal = e.target.value
         setInputValue(inputVal)
@@ -38,13 +39,13 @@ export default function ColorExplosion() {
                 h = 0,
                 s = 0,
                 l = 0;
-            if (delta == 0)
+            if (delta === 0)
             h = 0;
             // Red is max
-            else if (cmax == r)
+            else if (cmax === r)
             h = ((g - b) / delta) % 6;
             // Green is max
-            else if (cmax == g)
+            else if (cmax === g)
             h = (b - r) / delta + 2;
             // Blue is max
             else
@@ -53,7 +54,7 @@ export default function ColorExplosion() {
             if (h < 0)
                 h += 360;
             l = (cmax + cmin) / 2;
-            s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+            s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
             s = +(s * 100).toFixed(1);
             l = +(l * 100).toFixed(1);
             return h
@@ -89,7 +90,7 @@ export default function ColorExplosion() {
             }   
             return newArr;
             }
-            let total = 10
+            // let total = 10
             for (let colorOfDoc of reverseArray(newArray)) {
                 colorOfDoc.style.backgroundColor = `hsl(${h}deg ${s}% ${l}%)`;
                 const textColor = document.createElement("div");
@@ -108,40 +109,28 @@ export default function ColorExplosion() {
             h = RGBToHSL(getColor(selectedColor).r,getColor(selectedColor).g, getColor(selectedColor).b)
             let s2 = 100;
             let l2 = 50;
-            let total = 0;
+            // let total = 0;
             for (let colorOfDoc2 of document.getElementsByClassName('color-light')) {
                 colorOfDoc2.style.backgroundColor = `hsl(${h}deg ${s2}% ${l2}%)`;
-                const textColor2 = document.createElement("div");
-                // console.log('doccc', colorOfDoc2.innerHTML)
+                const textColor2 = document.createElement("div");                
+                    textColor2.className = "div-color"
+                    
+                    textColor2.innerHTML = HSLToRGB(h, s2, l2);
+                    colorOfDoc2.appendChild(textColor2)
+                    l2 -= 5;
                 
-                textColor2.className = "div-color"
-                
-                textColor2.innerHTML = HSLToRGB(h, s2, l2);
-                colorOfDoc2.appendChild(textColor2)
-                l2 -= 5;
-                // console.log('text color', typeof textColor2)
-                let newArr = [];
-                newArr.push(textColor2)
-                // console.log('new array', newArr)
-                // console.log('text color',textColor2[1])
-                // if(newArr.length === 3) {
-                //     colorOfDoc2.removeChild(textColor2[1])
-                //     console.log ('text color',textColor2)
+                // let colorTotal = document.getElementsByClassName('div-color')
+                // if( colorTotal.length > 1) {
+                //     for (let colorTotal of document.getElementsByClassName('div-color')){
+                //         const newArr = Array.from(colorTotal);
+                //         console.log('new color is there', newArr)
+                //         newArr.splice(0, 1)
+                //         console.log('final array', newArr.splice(0, 1))
+                //         // colorOfDoc2.appendChild(newArr)
+                //     }
                 // }
             }    
         }
-            for (let totalColor1 of document.getElementsByClassName('color-light')) {
-                const colorTotal = document.getElementsByClassName('div-color')
-                // const lengthColor = divOfColor.length
-                // console.log('divvv', divOfColor)
-                // let newColor = Array.from(colorTotal);
-                // console.log('new color is there', newColor)
-                // newColor.filter((item) => item % 2 === 0)
-                totalColor1.removeChild(colorTotal[1])
-                // totalColor1.removeChild(colorTotal[3])
-                
-                
-            }
         
         setListLighter(listLighter)
         setListDarker(listDarker)
@@ -190,7 +179,7 @@ export default function ColorExplosion() {
         newEl.select();
         document.execCommand('copy')
         document.body.removeChild(newEl)
-        setShowLoading(true)
+        // setShowLoading(true)
     
     }
 
@@ -214,7 +203,6 @@ export default function ColorExplosion() {
                     {/* <p id="div-1" style={{visibility: showLoading ? "visible": 'hidden'}}>COPY TO CLIPBOARD</p> */}
                     
                 </article>
-                
                 {listDarker.map((item,index) => (
                     <article key={index} className="color color-light" style={{color: "#fff"}} onClick={(e) => copyToClipboard(e)}>
                         <p className="percent-value">{item.percentage}</p>
