@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState, useRef } from 'react'
 //style
 import {WrapContent} from './index.styles'
 //data
@@ -13,17 +13,26 @@ export default function ColorExplosion() {
     // const [darker, setDarker] = useState(`rgb(0,0,0)`)
     const [listLighter, setListLighter] = useState(light);
     const [listDarker, setListDarker] = useState(dark);
-    console.log('dark', dark)
     // const [isActive, setIsActive] = useState(false)
-    // const [showLoading, setShowLoading] = useState(false)
+    const [showLoading, setShowLoading] = useState(false)
+    const boundColorEleRef = useRef(null)
+    
     const handleChange = (e) => {
         let inputVal = e.target.value
         setInputValue(inputVal)
     }
     const colorChanged = (h) => {
-        setListLighter([])
-        setListDarker([])
         
+        const boundColorEle = boundColorEleRef.current 
+        const lstColorEle = boundColorEle.childNodes;
+        
+        [...lstColorEle].forEach(item => {
+            const colorCodeEle = item.getElementsByClassName('color-div')[0]
+            if(!colorCodeEle) return;
+            item.removeChild(colorCodeEle)
+        })
+
+
         const d = document.createElement("div");
         d.style.color = inputValue;
         document.body.appendChild(d)
@@ -119,18 +128,30 @@ export default function ColorExplosion() {
                     colorOfDoc2.appendChild(textColor2)
                     l2 -= 5;
                 
-                // let colorTotal = document.getElementsByClassName('div-color')
-                // if( colorTotal.length > 1) {
-                //     for (let colorTotal of document.getElementsByClassName('div-color')){
-                //         const newArr = Array.from(colorTotal);
-                //         console.log('new color is there', newArr)
-                //         newArr.splice(0, 1)
-                //         console.log('final array', newArr.splice(0, 1))
-                //         // colorOfDoc2.appendChild(newArr)
-                //     }
+                // const clipBoard = document.createElement("div");
+                // clipBoard.innerHTML = "COPY TO CLIPBOARD";
+                // if (showLoading === true) {
+                
+                //     var timer = setTimeout(() =>  colorOfDoc2.appendChild(clipBoard), 3000);
+
+                // } else {
+                //     clearTimeout(timer)
                 // }
-            }    
+                
+            }
+            // let colorTotal = document.getElementsByClassName('div-color')
+            // if( colorTotal.length > 1) {
+            //     for (let colorTotal of document.getElementsByClassName('div-color')){
+            //         const newArr = Array.from(colorTotal);
+            //         console.log('new color is there', newArr)
+            //         newArr.splice(0, 1)
+            //         console.log('final array', newArr.splice(0, 1))
+            //         // colorOfDoc2.appendChild(newArr)
+            //     }
+            // }   
         }
+
+
         
         setListLighter(listLighter)
         setListDarker(listDarker)
@@ -168,8 +189,9 @@ export default function ColorExplosion() {
     return "#" + newValue
     }
     const copyToClipboard = (e) => {
-        let valueColor = e.target.lastElementChild.innerHTML
+        let valueColor = e.target.getElementsByClassName('color-div')[0].innerHTML
         // console.log('copy', valueColor)
+
         const newEl = document.createElement('textarea');
         newEl.value = valueColor;
         newEl.setAttribute('readonly','');
@@ -179,7 +201,15 @@ export default function ColorExplosion() {
         newEl.select();
         document.execCommand('copy')
         document.body.removeChild(newEl)
-        // setShowLoading(true)
+        setShowLoading(true)
+
+        const copyToClipboardEle = document.createElement('p')
+        copyToClipboardEle.innerHTML = 'COPY TO CLIPBOARD'
+        e.target.appendChild(copyToClipboardEle)
+
+        setTimeout(() => {
+            e.target.removeChild(copyToClipboardEle)
+        }, 500)
     
     }
 
@@ -190,7 +220,7 @@ export default function ColorExplosion() {
                 <input type="text" id="input"  placeholder={inputValue}  value={inputValue} onChange={(e) => handleChange(e)} />
                 <button className="btn-submit" onClick={colorChanged}>Submit</button>
             </div>
-            <div className="bound-color">
+            <div className="bound-color" ref={boundColorEleRef}>
                 {listLighter.map((item,index) => (
                     // backgroundColor:`rgb(255,255,255)`
                     <article key={index} className= "color false" style={{}} onClick={(e) => copyToClipboard(e)}>
@@ -200,6 +230,7 @@ export default function ColorExplosion() {
                 ))}
                 <article className="color color-light" style={{backgroundColor: selected,color: "#000000"}} onClick={(e) => copyToClipboard(e)}>
                     <p className="percent-value">0%</p>
+                    
                     {/* <p id="div-1" style={{visibility: showLoading ? "visible": 'hidden'}}>COPY TO CLIPBOARD</p> */}
                     
                 </article>
