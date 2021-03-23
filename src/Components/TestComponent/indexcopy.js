@@ -1,10 +1,10 @@
 import React, {useState} from 'react'
 //style
-import {WrapContent} from './index.styles'
+import {WrapContent} from '../index.styles'
 //data
-import light from '../data/listColor'
-import dark from '../data/listDarkColor'
-import dataPercent from '../data/dataPercent'
+import light from '../../data/listColor'
+import dark from '../../data/listDarkColor'
+import dataPercent from '../../data/dataPercent'
 export default function ColorExplosion() {
     const [inputValue, setInputValue] = useState("white");
     const [colorInRgb, setColorInRgb] = useState()

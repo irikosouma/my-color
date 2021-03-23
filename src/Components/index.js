@@ -31,8 +31,6 @@ export default function ColorExplosion() {
             if(!colorCodeEle) return;
             item.removeChild(colorCodeEle)
         })
-
-
         const d = document.createElement("div");
         d.style.color = inputValue;
         document.body.appendChild(d)
@@ -99,7 +97,6 @@ export default function ColorExplosion() {
             }   
             return newArr;
             }
-            // let total = 10
             for (let colorOfDoc of reverseArray(newArray)) {
                 colorOfDoc.style.backgroundColor = `hsl(${h}deg ${s}% ${l}%)`;
                 const textColor = document.createElement("div");
@@ -122,22 +119,10 @@ export default function ColorExplosion() {
             for (let colorOfDoc2 of document.getElementsByClassName('color-light')) {
                 colorOfDoc2.style.backgroundColor = `hsl(${h}deg ${s2}% ${l2}%)`;
                 const textColor2 = document.createElement("div");                
-                    textColor2.className = "div-color"
-                    
+                    textColor2.className = "color-div"
                     textColor2.innerHTML = HSLToRGB(h, s2, l2);
                     colorOfDoc2.appendChild(textColor2)
                     l2 -= 5;
-                
-                // const clipBoard = document.createElement("div");
-                // clipBoard.innerHTML = "COPY TO CLIPBOARD";
-                // if (showLoading === true) {
-                
-                //     var timer = setTimeout(() =>  colorOfDoc2.appendChild(clipBoard), 3000);
-
-                // } else {
-                //     clearTimeout(timer)
-                // }
-                
             }
             // let colorTotal = document.getElementsByClassName('div-color')
             // if( colorTotal.length > 1) {
@@ -150,14 +135,9 @@ export default function ColorExplosion() {
             //     }
             // }   
         }
-
-
-        
         setListLighter(listLighter)
         setListDarker(listDarker)
-        
         setInputValue("")
-        
     }
     function HSLToRGB(h, s, l) {
     s /= 100;
@@ -191,7 +171,6 @@ export default function ColorExplosion() {
     const copyToClipboard = (e) => {
         let valueColor = e.target.getElementsByClassName('color-div')[0].innerHTML
         // console.log('copy', valueColor)
-
         const newEl = document.createElement('textarea');
         newEl.value = valueColor;
         newEl.setAttribute('readonly','');
