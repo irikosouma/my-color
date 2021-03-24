@@ -1,18 +1,18 @@
 const light = [
     {
         id: "1",
-        percentage: "100%"
-        
+        percentage: "100%",
+        rgbColor: "255, 255, 255"
     },
     {
         id: "2",
-        percentage: "90%"
-        
+        percentage: "90%",
+        rgbColor: "255, 255, 255"
     },
     {
         id: "3",
-        percentage: "80%"
-        
+        percentage: "80%",
+        rgbColor: "255, 255, 255"
     },
     {
         id: "4",
