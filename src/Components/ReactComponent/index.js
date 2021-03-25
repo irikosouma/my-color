@@ -10,12 +10,12 @@ export default function ReactComponent() {
     const [lightColor, setLightColor] = useState(light)
     const [darkColor, setDarkColor] = useState(dark)
     const [inputColor, setInputColor] = useState("#F15025")
+    const [rList, setRList] = useState(lightColor.map((item) => item.rgbColor.r))
+    const [gList, setGList] = useState(lightColor.map((item) => item.rgbColor.g))
+    const [bList, setBList] = useState(lightColor.map((item) => item.rgbColor.b))
     const [h, setH] = useState("")
     const inputRef = useRef(null)
-    // const handleChange = (e) => {
-    //     let val = e.target.value
-    //     setInputColor(val)
-    // }
+    
     const getColor = (c) => {
         var temp = document.createElement("div");
         var color = {r:0,g:0,b:0};
@@ -67,40 +67,109 @@ export default function ReactComponent() {
     const handleSubmit = (input) => {
         let newInput = input.value
         setInputColor(newInput)
-        
-        setH(RGBToHSL(getColor(newInput).r,getColor(newInput).g, getColor(newInput).b))
-        // {
-        //     let s = 100;
-        //     let l = 55;
-        //     let h = RGBToHSL(getColor(newInput).r,getColor(newInput).g, getColor(newInput).b)
-        //     // let colorLight = light.length
-        //     // let newArray = Array.from(colorLight)
-        //     // const reverseArray = (arr) => {
-        //     // let newArr = [];
-        //     // for (var i = 0, j = arr.length - 1; i < arr.length; i++, j--) {      
-        //     //     newArr[i] = arr[j];
-        //     // }   
-        //     // return newArr;
-        //     // }
-        //     for (let colorOfDoc of lightColor) {
-        //         colorOfDoc.style.backgroundColor = `hsl(${h}deg ${s}% ${l}%)`;
-        //         const textColor = document.createElement("div");
-        //         textColor.className = "color-div"
-        //         // textColor.innerHTML = HSLToRGB(h, s, l);
-        //         colorOfDoc.appendChild(textColor)
-        //         l += 5;
-        //     }
-        // }
+        // console.log("rgb color", getColor(newInput).r,getColor(newInput).g, getColor(newInput).b)
+        // setH(RGBToHSL(getColor(newInput).r,getColor(newInput).g, getColor(newInput).b))
+            const checkValue = (value) => {
+                if(value === 0) {
+                    value = 0
+                }
+                else if (value !== 0 && value < 255) {
+                    value -= 26
+                    return value
+                }
+                else if(value === 255){
+                    let newVal = 256
+                    value = newVal -= 26
+                    return value
+                }
+                else if( value < 0) {
+                    value = 0
+                }
+                return value
+            }
+            
+                let newRList = []
+                let newGList = []
+                let newBList = []
+                let newR = (getColor(newInput).r)
+                let newG = (getColor(newInput).g)
+                let newB = (getColor(newInput).b)
+            for (let i = 0; i < darkColor.length; i++) {
+                
+                if(newR === 255){
+                    newR = 256
+                }
+                else if(newR === 0) {
+                    newR = 0
+                    
+                }
+                newR -= 26;
+                if(newR < 0) {
+                    newR
+                    = 0
+                }
+                newRList.push(newR)
+                // console.log('R ne', newR)
+                setRList(newRList)
+                // console.log('new r list', newRList)
+            }
+            for (let i = 0; i < darkColor.length; i++) {            
+                if(newG === 255){
+                    newG = 256
+                }
+                else if(newG === 0) {
+                    newG = 0
+                }
+                newG -= 26;
+                if(newG < 0) {
+                    newG = 0
+                }
+                // console.log('G ne', newG)
+                newGList.push(newG)
+                setGList(newGList)
+                // console.log('new  g list', newGList)
+            }
+            for (let i = 0; i < darkColor.length; i++) {
+                if(newB === 255){
+                    newB = 256
+                }
+                else if(newB === 0) {
+                    newB = 0
+                    
+                }
+                newB -= 26;
+                if(newB < 0) {
+                    newB = 0
+                }
+                newBList.push(newB)
+                // console.log('B ne', newB)
+                setBList(newBList)
+                // console.log('new b list', newBList)
+            }
+            // console.log('new listtt', newList)
+            // setRgbList(newList)
+
     }
     return (
         <WrapContent>
             <div className="header-content">
                 <div className="title-page">Color Generator</div>
-                <input id="input" type="text"  ref={inputRef} placeholder="#f15025" value={null} onChange=""/>
+                <input id="input" type="text"  ref={inputRef} placeholder="#f15025" value={undefined} onChange={null}/>
                 <button type="submit" className="btn-submit" onClick={() => handleSubmit(inputRef.current)}>Submit</button>
             </div>
             <div className="bound-color">
-                <ColorComponent selectedColor={inputColor}  lightLength={lightColor.length} darkLength={darkColor.length} hueColor={h} lightColor={lightColor} setLightColor={setLightColor} darkColor={darkColor} setDarkColor={setDarkColor}/>
+                <ColorComponent 
+                    selectedColor={inputColor} 
+                    // rList={lightColor.map((item) => item.rgbColor.r)} 
+                    // gList={lightColor.map((item) => item.rgbColor.g)}  
+                    // bList={lightColor.map((item) => item.rgbColor.b)}
+                    rList={rList}
+                    gList={gList}
+                    bList={bList}
+                    lightColor={lightColor} 
+                    setLightColor={setLightColor} 
+                    darkColor={darkColor} 
+                    setDarkColor={setDarkColor}/>
             </div>
         </WrapContent>
     )
