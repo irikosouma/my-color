@@ -8,7 +8,14 @@ const Wrap = styled.div`
         grid-template-columns: repeat(auto-fit,minmax(223.33px,1fr));
         grid-template-rows: repeat(auto-fit,minmax(96px,1fr));
         color: #000000;
-        /* background-color: antiquewhite; */
+        .light-color {
+            color: #000000;
+            /* padding-left: 30px; */
+        }
+        p {
+            margin-left: 30px;
+        }
+        
     }
 
 `;

@@ -181,7 +181,6 @@
 //         document.execCommand('copy')
 //         document.body.removeChild(newEl)
 //         setShowLoading(true)
-
 //         const copyToClipboardEle = document.createElement('p')
 //         copyToClipboardEle.innerHTML = 'COPY TO CLIPBOARD'
 //         e.target.appendChild(copyToClipboardEle)

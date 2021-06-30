@@ -10,10 +10,12 @@ export default function ReactComponent() {
     const [lightColor, setLightColor] = useState(light)
     const [darkColor, setDarkColor] = useState(dark)
     const [inputColor, setInputColor] = useState("#F15025")
-    const [rList, setRList] = useState(lightColor.map((item) => item.rgbColor.r))
-    const [gList, setGList] = useState(lightColor.map((item) => item.rgbColor.g))
-    const [bList, setBList] = useState(lightColor.map((item) => item.rgbColor.b))
-    const [h, setH] = useState("")
+    const [rLightList, setRLightList] = useState(lightColor.map((item) => item.rgbColor.r))
+    const [gLightList, setGLightList] = useState(lightColor.map((item) => item.rgbColor.g))
+    const [bLightList, setBLightList] = useState(lightColor.map((item) => item.rgbColor.b))
+    const [rList, setRList] = useState(darkColor.map((item) => item.rgbColor.r))
+    const [gList, setGList] = useState(darkColor.map((item) => item.rgbColor.g))
+    const [bList, setBList] = useState(darkColor.map((item) => item.rgbColor.b))
     const inputRef = useRef(null)
     
     const getColor = (c) => {
@@ -67,8 +69,6 @@ export default function ReactComponent() {
     const handleSubmit = (input) => {
         let newInput = input.value
         setInputColor(newInput)
-        // console.log("rgb color", getColor(newInput).r,getColor(newInput).g, getColor(newInput).b)
-        // setH(RGBToHSL(getColor(newInput).r,getColor(newInput).g, getColor(newInput).b))
             const checkValue = (value) => {
                 if(value === 0) {
                     value = 0
@@ -87,89 +87,146 @@ export default function ReactComponent() {
                 }
                 return value
             }
-            
+            {
                 let newRList = []
                 let newGList = []
                 let newBList = []
                 let newR = (getColor(newInput).r)
                 let newG = (getColor(newInput).g)
                 let newB = (getColor(newInput).b)
-            for (let i = 0; i < darkColor.length; i++) {
-                
-                if(newR === 255){
-                    newR = 256
-                }
-                else if(newR === 0) {
-                    newR = 0
+                for (let i = 0; i < darkColor.length; i++) {
                     
+                    if(newR === 255){
+                        newR = 256
+                    }
+                    else if(newR === 0) {
+                        newR = 0
+                    }
+                    newR -= 26;
+                    if(newR < 0) {
+                        newR = 0
+                    }
+                    newRList.push(newR)
+                    setRList(newRList)
                 }
-                newR -= 26;
-                if(newR < 0) {
-                    newR
-                    = 0
+                for (let i = 0; i < darkColor.length; i++) {            
+                    if(newG === 255){
+                        newG = 256
+                    }
+                    else if(newG === 0) {
+                        newG = 0
+                    }
+                    newG -= 26;
+                    if(newG < 0) {
+                        newG = 0
+                    }
+                    newGList.push(newG)
+                    setGList(newGList)
                 }
-                newRList.push(newR)
-                // console.log('R ne', newR)
-                setRList(newRList)
-                // console.log('new r list', newRList)
+                for (let i = 0; i < darkColor.length; i++) {
+                    if(newB === 255){
+                        newB = 256
+                    }
+                    else if(newB === 0) {
+                        newB = 0
+                    }
+                    newB -= 26;
+                    if(newB < 0) {
+                        newB = 0
+                    }
+                    newBList.push(newB)
+                    setBList(newBList)
+                }
             }
-            for (let i = 0; i < darkColor.length; i++) {            
-                if(newG === 255){
-                    newG = 256
+            {
+                let newRList = []
+                let newGList = []
+                let newBList = []
+                let newR = (getColor(newInput).r)
+                let newG = (getColor(newInput).g)
+                let newB = (getColor(newInput).b)
+                for (let i = 0; i < lightColor.length; i++) {
+                    if (newR === 0) {
+                        let newVal = -1
+                        newR = newVal += 26
+                    } 
+                    else if(0 < newR < 255){
+                        newR += 26
+                    }
+                    else if(newR === 255)
+                    {
+                        newR = 255
+                    }
+                    if (newR > 255) {
+                        newR = 255
+                    }
+                    newRList.push(newR)
                 }
-                else if(newG === 0) {
-                    newG = 0
+                const newListR = newRList.reverse()
+                setRLightList(newListR)
+                for (let i = 0; i < lightColor.length; i++) {
+                    if (newG === 0) {
+                        let newVal = -1
+                        newG = newVal += 26
+                    } 
+                    else if(0 < newG < 255){
+                        newG += 26
+                    }
+                    else if(newG === 255)
+                    {
+                        newG = 255
+                    }
+                    if (newG > 255) {
+                        newG = 255
+                    }
+                    newGList.push(newG)
                 }
-                newG -= 26;
-                if(newG < 0) {
-                    newG = 0
+                const newListG = newGList.reverse()
+                setGLightList(newListG)
+                for (let i = 0; i < lightColor.length; i++) {
+                    if (newB === 0) {
+                        let newVal = -1
+                        newB = newVal += 26
+                    } 
+                    else if(0 < newB < 255){
+                        newB += 26
+                    }
+                    else if(newB === 255)
+                    {
+                        newB = 255
+                    }
+                    if (newB > 255) {
+                        newB = 255
+                    }
+                    newBList.push(newB)
                 }
-                // console.log('G ne', newG)
-                newGList.push(newG)
-                setGList(newGList)
-                // console.log('new  g list', newGList)
+                const newListB = newBList.reverse()
+                setBLightList(newListB)
             }
-            for (let i = 0; i < darkColor.length; i++) {
-                if(newB === 255){
-                    newB = 256
-                }
-                else if(newB === 0) {
-                    newB = 0
-                    
-                }
-                newB -= 26;
-                if(newB < 0) {
-                    newB = 0
-                }
-                newBList.push(newB)
-                // console.log('B ne', newB)
-                setBList(newBList)
-                // console.log('new b list', newBList)
-            }
-            // console.log('new listtt', newList)
-            // setRgbList(newList)
-
     }
+    
     return (
         <WrapContent>
             <div className="header-content">
-                <div className="title-page">Color Generator</div>
-                <input id="input" type="text"  ref={inputRef} placeholder="#f15025" value={undefined} onChange={null}/>
-                <button type="submit" className="btn-submit" onClick={() => handleSubmit(inputRef.current)}>Submit</button>
+                <div className="title-page">Color <span>Generator</span></div>
+                <div className="bound-input">
+                    <input id="input" type="text"  ref={inputRef} placeholder="#f15025" value={undefined} onChange={null}/>
+                    <button type="submit" className="btn-submit" onClick={() => handleSubmit(inputRef.current)}>Submit</button>
+                </div>
+                
             </div>
             <div className="bound-color">
                 <ColorComponent 
                     selectedColor={inputColor} 
-                    // rList={lightColor.map((item) => item.rgbColor.r)} 
-                    // gList={lightColor.map((item) => item.rgbColor.g)}  
-                    // bList={lightColor.map((item) => item.rgbColor.b)}
+                    rLightList={rLightList} 
+                    gLightList={gLightList}  
+                    bLightList={bLightList}
                     rList={rList}
                     gList={gList}
                     bList={bList}
-                    lightColor={lightColor} 
-                    setLightColor={setLightColor} 
+                    lightColor={lightColor}
                     darkColor={darkColor} 
-                    setDarkColor={setDarkColor}/>
+                />
             </div>
         </WrapContent>
     )
